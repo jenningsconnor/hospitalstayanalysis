@@ -1,0 +1,134 @@
+Select *
+FROM hosp_stay
+
+SELECT COUNT(DISTINCT case_id) as `Case Count`,
+	COUNT(DISTINCT patientid) as `Unique Pt. Count`, 
+	COUNT(DISTINCT Hospital_code) as `Unique Hospital Count`,
+    COUNT(DISTINCT Hospital_type_code) as 'Unique Hospital Type Count',
+    COUNT(DISTINCT City_Code_Hospital) as 'Unique Hospital City Count',
+    COUNT(DISTINCT Hospital_region_code) as 'Unique Region Count',
+    COUNT(DISTINCT City_Code_Patient) as 'Unique Patient City Count',
+    COUNT(DISTINCT Admission_Deposit) as 'Unique Patient Deposit Numbers'
+FROM hosp_stay
+
+SELECT COUNT(patientid) As 'Nuber of Pts. with Only One Case'
+FROM (
+    SELECT patientid
+    FROM hosp_stay
+    GROUP BY patientid
+    HAVING COUNT(*) = 1
+) AS ONLY_ONCE
+
+SELECT patientid,
+	COUNT(DISTINCT Hospital_code) AS `Number of Hospitals Pt. Stayed At`,
+    COUNT(*) AS Case_Number
+FROM hosp_stay
+GROUP BY patientid
+ORDER BY Case_Number DESC
+
+SELECT stay, 
+	COUNT(*) AS Case_Number,
+    COUNT(DISTINCT patientid) AS Pt_Number,
+    ROUND(count(*) * 100.0/ sum(count(*)) over (), 2) as Case_Perc,
+    ROUND(count(DISTINCT patientid) * 100.0/ sum(count(DISTINCT patientid)) over (), 2) as Pt_Perc
+FROM hosp_stay
+GROUP BY stay
+
+SELECT Hospital_code, 
+	stay,
+	COUNT(*) AS Case_Number,
+    COUNT(DISTINCT patientid) AS Pt_Number,
+    ROUND(count(*) * 100.0/ sum(count(*)) over (), 2) as Case_Perc,
+    ROUND(count(DISTINCT patientid) * 100.0/ sum(count(DISTINCT patientid)) over (), 2) as Pt_Perc
+FROM hosp_stay
+GROUP BY Hospital_code, stay
+ORDER BY Hospital_code 
+
+SELECT Age, 
+	stay,
+	COUNT(*) AS Case_Number,
+    COUNT(DISTINCT patientid) AS Patient_Number,
+    ROUND(count(*) * 100.0/ sum(count(*)) over (), 2) as Case_Perc,
+    ROUND(count(DISTINCT patientid) * 100.0/ sum(count(DISTINCT patientid)) over (), 2) as Pt_Perc
+FROM hosp_stay
+GROUP BY Age, stay
+ORDER BY Age, stay
+
+SELECT `Severity of Illness`,
+	stay,
+	COUNT(*) AS Case_Number,
+    COUNT(DISTINCT patientid) AS Patient_Number,    
+    ROUND(count(*) * 100.0/ sum(count(*)) over (), 2) as Case_Perc
+FROM hosp_stay
+GROUP BY `Severity of Illness`, stay
+ORDER BY `Severity of Illness`
+
+SELECT `Type of Admission`,
+	stay,
+	COUNT(*) AS Case_Number,
+    COUNT(DISTINCT patientid) AS Patient_Number,
+	ROUND(count(*) * 100.0/ sum(count(*)) over (), 2) as Case_Perc
+FROM hosp_stay
+GROUP BY `Type of Admission`, stay
+ORDER BY `Type of Admission`
+
+SELECT Age,
+	Department,
+	`Type of Admission`,
+    `Severity of Illness`,
+    COUNT(*) AS Case_Number,
+    COUNT(DISTINCT patientid) AS Patient_Number,
+    ROUND(count(*) * 100.0/ sum(count(*)) over (), 2) as Case_Perc
+FROM hosp_stay
+GROUP BY Age, Department, `Type of Admission`, `Severity of Illness`
+ORDER BY Age
+
+SELECT `Available Extra Rooms in Hospital` AS `Extra Rooms`,
+	stay,
+	COUNT(*) AS `Case Number`,
+    COUNT(DISTINCT patientid) AS Patient_Number,
+	ROUND(count(*) * 100.0/ sum(count(*)) over (), 2) as Case_Perc,
+    ROUND(count(DISTINCT patientid) * 100.0/ sum(count(DISTINCT patientid)) over (), 2) as Pt_Perc
+FROM hosp_stay
+GROUP BY `Extra Rooms`, stay
+ORDER BY `Extra Rooms`, stay
+
+SELECT `Bed Grade`,
+	stay,
+	COUNT(*) as Case_Number,
+    COUNT(DISTINCT patientid) AS Pt_Number,
+	ROUND(count(*) * 100.0/ sum(count(*)) over (), 2) as Case_Perc,
+    ROUND(count(DISTINCT patientid) * 100.0/ sum(count(DISTINCT patientid)) over (), 2) as Pt_Perc
+FROM hosp_stay
+GROUP BY `Bed Grade`, stay
+ORDER BY `Bed Grade` DESC, stay
+
+SELECT Ward_Type, 
+	stay,
+    COUNT(*) as Case_Number,
+    COUNT(DISTINCT patientid) AS Pt_Number,
+	ROUND(count(*) * 100.0/ sum(count(*)) over (), 2) as Case_Perc,
+    ROUND(count(DISTINCT patientid) * 100.0/ sum(count(DISTINCT patientid)) over (), 2) as Pt_Perc
+FROM hosp_stay
+GROUP BY Ward_Type, stay
+ORDER BY stay
+
+SELECT City_Code_Hospital,
+	stay,
+	COUNT(*) as Case_Number,
+    COUNT(DISTINCT patientid) AS Pt_Number,
+	ROUND(count(*) * 100.0/ sum(count(*)) over (), 2) as Case_Perc,
+    ROUND(count(DISTINCT patientid) * 100.0/ sum(count(DISTINCT patientid)) over (), 2) as Pt_Perc
+FROM hosp_stay
+GROUP BY City_Code_Hospital, stay
+ORDER BY City_Code_Hospital
+
+SELECT City_Code_Patient, 
+	stay,
+	COUNT(*) as Case_Number,
+    COUNT(DISTINCT patientid) AS Pt_Number,
+	ROUND(count(*) * 100.0/ sum(count(*)) over (), 2) as Case_Perc,
+    ROUND(count(DISTINCT patientid) * 100.0/ sum(count(DISTINCT patientid)) over (), 2) as Pt_Perc
+FROM hosp_stay
+GROUP BY City_Code_Patient
+ORDER BY City_Code_Patient
